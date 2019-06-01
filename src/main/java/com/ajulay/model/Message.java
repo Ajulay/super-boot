@@ -22,6 +22,8 @@ public class Message {
 
     private String tag;
 
+    private String filename;
+
     public String getAuthorName() {
         return author != null ? author.getUsername() : "<none>";
     }

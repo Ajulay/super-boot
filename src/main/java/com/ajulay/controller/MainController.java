@@ -4,21 +4,30 @@ import com.ajulay.model.Message;
 import com.ajulay.model.User;
 import com.ajulay.repository.MessageRepository;
 
+import javassist.bytecode.analysis.MultiType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 public class MainController {
 
     @Autowired
     private MessageRepository messageRepository;
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @GetMapping("/")
     public String getHello(){
@@ -44,19 +53,25 @@ public class MainController {
     @PostMapping("/main")
     public String addMain(
             @AuthenticationPrincipal User user,
-            @RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
+            @RequestParam String text, @RequestParam String tag, Map<String, Object> model,
+            @RequestParam MultipartFile file) throws IOException {
         Message message = new Message(text, tag, user);
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+
+            String uuidfile = UUID.randomUUID().toString() + "." + file.getOriginalFilename();
+
+            file.transferTo(new File(uploadPath + "/" + uuidfile));
+
+            message.setFilename(uuidfile);
+        }
+
         messageRepository.save(message);
         model.put("messages", messageRepository.findAll());
         return "main";
     }
 
-//    @PostMapping("/filter")
-//    public String filter(@RequestParam  String tag, Map<String, Object> model){
-//        if(tag == null || tag.isEmpty()){
-//            model.put("messages", messageRepository.findAll());
-//        } else
-//            model.put("messages", messageRepository.findByTag(tag));
-//        return "main";
-//    }
 }

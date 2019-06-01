@@ -17,8 +17,8 @@ import javax.sql.DataSource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private DataSource dataSource;
+//    @Autowired
+//    private DataSource dataSource;
 
     @Autowired
     private UserService userService;
@@ -27,15 +27,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/registration").permitAll()
+                .antMatchers("/", "/registration", "/static").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+        // .and()
+        //.logout()
+        //.permitAll()
+        ;
     }
 
 //    @Bean
@@ -53,9 +54,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Override
+//               jdbcAuthentication()
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService)
-//               jdbcAuthentication()
 //               .dataSource(dataSource)
                .passwordEncoder(NoOpPasswordEncoder.getInstance())
 //               .usersByUsernameQuery("select username, password, active from \"user\" where username=?")
