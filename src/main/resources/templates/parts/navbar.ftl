@@ -21,7 +21,7 @@
                 <a class="nav-link" href="/user">User list</a>
             </li>
             </#if>
-            <#if user??>
+            <#if isActive>
                 <li class="nav-item">
                     <a class="nav-link" href="/user/profile">User profile</a>
                 </li>
