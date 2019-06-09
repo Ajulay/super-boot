@@ -14,9 +14,9 @@
         </div>
     <#if isRegisterForm>
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">email: </label>
+            <label class="col-sm-2 col-form-label">Email: </label>
             <div class="col-sm-5">
-                <input type="email" name="email" placeholder="email" class="form-control">
+                <input type="email" name="email" placeholder="email@email.com" class="form-control">
             </div>
         </div>
     </#if>
