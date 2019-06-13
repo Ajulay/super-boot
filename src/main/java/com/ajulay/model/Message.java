@@ -5,8 +5,10 @@ package com.ajulay.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
@@ -18,6 +20,9 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+
+    @NotBlank(message = "Message cannot be empty")
+    @Length(max = 2048, message = "Message too long (more than 2 kB)")
     private String text;
 
     private String tag;

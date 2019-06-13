@@ -16,6 +16,9 @@
 <div class="collapse" id="collapseExample">
     <div class="form-group mt-3">
     <form method="post" action="/main" enctype="multipart/form-data">
+        <if textError??>
+            <div
+        </if>
         <div class="form-group">
             <input type="text" name="text" placeholder="Enter message">
         </div>

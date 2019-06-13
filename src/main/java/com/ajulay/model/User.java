@@ -6,17 +6,9 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Set;
 
@@ -31,12 +23,19 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+
+    @NotBlank(message = "Username cannot be empty")
     private String username;
 
+    @NotBlank(message = "Password cannot be empty")
     private String password;
 
-    private Boolean active;
+    @Transient
+    private String password2;
 
+    private Boolean active = Boolean.FALSE;
+
+    @Email(message = "Email is not correct")
     private String email;
 
     private String activationCode;

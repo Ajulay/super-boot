@@ -10,15 +10,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
@@ -30,7 +35,7 @@ public class MainController {
     private String uploadPath;
 
     @GetMapping("/")
-    public String getHello(){
+    public String getHello() {
         return "greeting";
     }
 
@@ -50,25 +55,32 @@ public class MainController {
 
         return "main";
     }
+
     @PostMapping("/main")
     public String addMain(
             @AuthenticationPrincipal User user,
-            @RequestParam String text, @RequestParam String tag, Map<String, Object> model,
+            @Valid Message message,
+            BindingResult bindingResult,
+            Model model,
             @RequestParam MultipartFile file) throws IOException {
-        Message message = new Message(text, tag, user);
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
+        message.setAuthor(user);
+        if (bindingResult.hasErrors()) {
+            model.mergeAttributes(ControllerUtil.getErrors(bindingResult));
+        } else {
+            if (file != null && !file.getOriginalFilename().isEmpty()) {
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdir();
+                }
+
+                String uuidfile = UUID.randomUUID().toString() + "." + file.getOriginalFilename();
+                file.transferTo(new File(uploadPath + "/" + uuidfile));
+                message.setFilename(uuidfile);
             }
-
-            String uuidfile = UUID.randomUUID().toString() + "." + file.getOriginalFilename();
-            file.transferTo(new File(uploadPath + "/" + uuidfile));
-            message.setFilename(uuidfile);
         }
-
         messageRepository.save(message);
-        model.put("messages", messageRepository.findAll());
+        model.addAttribute("messages", messageRepository.findAll());
+
         return "main";
     }
 
