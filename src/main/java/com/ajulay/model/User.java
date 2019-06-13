@@ -31,11 +31,13 @@ public class User implements UserDetails {
     private String password;
 
     @Transient
+    @NotBlank(message = "Password cannot be empty")
     private String password2;
 
     private Boolean active = Boolean.FALSE;
 
     @Email(message = "Email is not correct")
+    @NotBlank(message = "Email cannot be empty")
     private String email;
 
     private String activationCode;

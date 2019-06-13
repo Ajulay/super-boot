@@ -42,17 +42,13 @@ public class MainController {
     @GetMapping("/main")
     public String main(@RequestParam(required = false, defaultValue = "") String tag, Model model) {
         Iterable<Message> messages;
-
         if (tag == null || tag.isEmpty()) {
             messages = messageRepository.findAll();
-
         } else {
             messages = messageRepository.findByTag(tag);
-
         }
         model.addAttribute("messages", messages);
         model.addAttribute("tag", tag);
-
         return "main";
     }
 
@@ -66,19 +62,20 @@ public class MainController {
         message.setAuthor(user);
         if (bindingResult.hasErrors()) {
             model.mergeAttributes(ControllerUtil.getErrors(bindingResult));
+            model.addAttribute("message", message);
         } else {
             if (file != null && !file.getOriginalFilename().isEmpty()) {
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdir();
                 }
-
                 String uuidfile = UUID.randomUUID().toString() + "." + file.getOriginalFilename();
                 file.transferTo(new File(uploadPath + "/" + uuidfile));
                 message.setFilename(uuidfile);
             }
+            model.addAttribute("message", null);
+            messageRepository.save(message);
         }
-        messageRepository.save(message);
         model.addAttribute("messages", messageRepository.findAll());
 
         return "main";

@@ -5,6 +5,7 @@ import com.ajulay.model.User;
 import com.ajulay.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,7 +36,11 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
+        if (user == null){
+            throw new UsernameNotFoundException("User not found");
+        }
+        return user;
     }
 
     public boolean addUser(User user) {
@@ -65,13 +70,11 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean activateUser(String code) {
-
         User user = userRepository.findByActivationCode(code);
         if (user == null) return false;
         user.setActivationCode(null);
         user.setActive(true);
         userRepository.save(user);
-
         return true;
     }
 
@@ -79,10 +82,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-
     public void saveUser(User user, String username, Map<String, String> form) {
         user.setUsername(username);
-
         Set<String> roles = Arrays.stream(Role.values())
                 .map(Role::name)
                 .collect(Collectors.toSet());
@@ -112,6 +113,8 @@ public class UserService implements UserDetailsService {
         if (isEmailChanged) {
             sendMessage(user);
             user.setActive(Boolean.FALSE);
+            SecurityContextHolder.getContext()
+                    .getAuthentication().setAuthenticated(false);
         }
         userRepository.save(user);
     }

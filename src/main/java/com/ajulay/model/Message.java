@@ -25,6 +25,7 @@ public class Message {
     @Length(max = 2048, message = "Message too long (more than 2 kB)")
     private String text;
 
+    @Length(max = 255, message = "Tag too long (more than 1 B)")
     private String tag;
 
     private String filename;
