@@ -51,6 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //.failureUrl("/login.html?error=true")
 //                .failureHandler(authenticationFailureHandler())
                 .and()
+                .rememberMe()
+                .and()
                 .logout()
 //                .logoutUrl("/")
                 .deleteCookies("JSESSIONID")

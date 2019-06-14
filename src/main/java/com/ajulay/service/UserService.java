@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,7 +54,6 @@ public class UserService implements UserDetailsService {
         user.setActivationCode(UUID.randomUUID().toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-
         if (!StringUtils.isEmpty(user.getEmail())) {
             sendMessage(user);
         }
@@ -109,7 +109,6 @@ public class UserService implements UserDetailsService {
         if (!StringUtils.isEmpty(password)) {
             user.setPassword(passwordEncoder.encode(password));
         }
-
         if (isEmailChanged) {
             sendMessage(user);
             user.setActive(Boolean.FALSE);

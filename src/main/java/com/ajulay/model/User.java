@@ -30,9 +30,9 @@ public class User implements UserDetails {
     @NotBlank(message = "Password cannot be empty")
     private String password;
 
-    @Transient
-    @NotBlank(message = "Password cannot be empty")
-    private String password2 = "1"; //default value from hibernate ConstraintViolationException
+//    @Transient
+//    @NotBlank(message = "Password cannot be empty")
+//    private String password2 = "1"; //default value from hibernate ConstraintViolationException
 
     private Boolean active = Boolean.FALSE;
 

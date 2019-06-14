@@ -62,8 +62,6 @@
                 <div class="card-footer text-muted">
                     ${message.authorName}
                 </div>
-
-
             </div>
         <#else> No messages
         </#list>
