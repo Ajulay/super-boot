@@ -32,7 +32,7 @@ public class User implements UserDetails {
 
     @Transient
     @NotBlank(message = "Password cannot be empty")
-    private String password2;
+    private String password2 = "1"; //default value from hibernate ConstraintViolationException
 
     private Boolean active = Boolean.FALSE;
 
