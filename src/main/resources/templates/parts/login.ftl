@@ -55,7 +55,6 @@
                 <div class="alert alert-danger" role="alert">${recaptchaError}</div>
             </#if>
         </div>
-
     </#if>
         <input type="hidden" name="_csrf" value="${_csrf.token}">
         <#if !isRegisterForm>
