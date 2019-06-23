@@ -1,3 +1,4 @@
+<#include "security.ftl">
 <#macro login path isRegisterForm>
     <form method="post" action="${path}">
         <div class="form-group row">
@@ -24,38 +25,38 @@
                 </#if>
             </div>
         </div>
-    <#if isRegisterForm>
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Confirm password: </label>
+        <#if isRegisterForm>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Confirm password: </label>
+                <div class="col-sm-5">
+                    <input type="password" name="password2" placeholder="confirm password"
+                           class="form-control ${(password2Error??)?string('is-invalid', '')}">
+                    <#if password2Error??>
+                        <div class="invalid-feedback">
+                            ${password2Error}
+                        </div>
+                    </#if>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Email: </label>
+                <div class="col-sm-5">
+                    <input type="email" name="email" placeholder="email@email.com" value="<#if user??>${user.email}</#if>"
+                           class="form-control ${(emailError??)?string('is-invalid', '')}">
+                    <#if emailError??>
+                        <div class="invalid-feedback">
+                            ${emailError}
+                        </div>
+                    </#if>
+                </div>
+            </div>
             <div class="col-sm-5">
-                <input type="password" name="password2" placeholder="confirm password"
-                       class="form-control ${(password2Error??)?string('is-invalid', '')}">
-                <#if password2Error??>
-                    <div class="invalid-feedback">
-                        ${password2Error}
-                    </div>
+                <div class="g-recaptcha" data-sitekey="6Lcp46gUAAAAAPz_2lryfE9LgoIz3zbtw4StJGbb"></div>
+                <#if recaptchaError??>
+                    <div class="alert alert-danger" role="alert">${recaptchaError}</div>
                 </#if>
             </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Email: </label>
-            <div class="col-sm-5">
-                <input type="email" name="email" placeholder="email@email.com" value="<#if user??>${user.email}</#if>"
-                       class="form-control ${(emailError??)?string('is-invalid', '')}">
-                <#if emailError??>
-                    <div class="invalid-feedback">
-                        ${emailError}
-                    </div>
-                </#if>
-            </div>
-        </div>
-        <div class="col-sm-5">
-            <div class="g-recaptcha" data-sitekey="6Lcp46gUAAAAAPz_2lryfE9LgoIz3zbtw4StJGbb"></div>
-            <#if recaptchaError??>
-                <div class="alert alert-danger" role="alert">${recaptchaError}</div>
-            </#if>
-        </div>
-    </#if>
+        </#if>
         <input type="hidden" name="_csrf" value="${_csrf.token}">
         <#if !isRegisterForm>
             <a href="/registration">add new user</a>
@@ -67,6 +68,6 @@
 <#macro logout>
     <form action="/logout" method="post">
         <input type="hidden" name="_csrf" value="${_csrf.token}">
-        <button class="btn btn-primary" type="submit">Log Out</button>
+        <button class="btn btn-primary" type="submit"><#if isActive>Log Out <#else>Log In </#if></button>
     </form>
 </#macro>

@@ -25,5 +25,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.flywaydb:flyway-core'
-
+    implementation 'org.springframework.session:spring-session-jdbc'
+// https://mvnrepository.com/artifact/org.springframework.session/spring-session-jdbc
+    // https://mvnrepository.com/artifact/org.springframework.session/spring-session-jdbc
+//    implementation 'org.springframework.session:spring-session-jdbc'
 }

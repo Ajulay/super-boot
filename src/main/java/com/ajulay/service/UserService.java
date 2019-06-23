@@ -1,8 +1,11 @@
 package com.ajulay.service;
 
+
 import com.ajulay.model.Role;
 import com.ajulay.model.User;
 import com.ajulay.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,13 +15,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
+
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -38,7 +42,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
-        if (user == null){
+        if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
         return user;
@@ -115,6 +119,16 @@ public class UserService implements UserDetailsService {
             SecurityContextHolder.getContext()
                     .getAuthentication().setAuthenticated(false);
         }
+        userRepository.save(user);
+    }
+
+    public void subscribe(User user, User currentUser) {
+        user.getSubscribers().add(currentUser);
+        userRepository.save(user);
+    }
+
+    public void unsubscribe(User user, User currentUser) {
+        user.getSubscribers().remove(currentUser);
         userRepository.save(user);
     }
 
